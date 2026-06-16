@@ -10,8 +10,6 @@
 
             console.log("Error connecting to database");
 
-
-
         }
     }
 
