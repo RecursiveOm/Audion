@@ -1,12 +1,6 @@
 # Audion
-🎧 Audion — A scalable music streaming backend platform featuring JWT authentication, role-based access control, cloud media uploads, and RESTful API architecture.
-# Audion
+Audion — A scalable music streaming backend platform featuring JWT authentication, role-based access control, cloud media uploads, and RESTful API architecture.
 
-Audion is a backend REST API for a music streaming platform built using Node.js, Express.js, and MongoDB.
-
-The system provides authentication, role-based authorization, artist music uploads, album management, cloud storage integration, request validation, and automated API testing.
-
----
 
 ## Features
 
