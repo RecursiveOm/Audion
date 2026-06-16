@@ -1,0 +1,252 @@
+{
+  "info": {
+    "_postman_id": "8788230e-b520-4030-9ac3-c46ee76ec56c",
+    "name": "Audion",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55631813",
+    "_collection_link": "https://go.postman.co/collection/55631813-8788230e-b520-4030-9ac3-c46ee76ec56c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Album",
+      "item": [
+        {
+          "name": "Create Album",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\":\"My First Album\",\n\n    \"musicIds\":[\n        \"6a2ee96db60b968b3cd80f73\",\n        \"6a2f04aab39421e0b16453ef\",\n        \"6a3171926448d97fbaa6b315\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/music/album",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "music",
+                "album"
+              ]
+            },
+            "description": "# Create Album API\n\nCreates a collection of multiple songs.\n\nAccess:\n\nArtist only\n\nEndpoint:\n\nPOST /api/music/album\n\n### Request Body\n\n{  \n\"title\":\"My Album\",\n\n```\n\"musicIds\":[\n    \"music_mongodb_id\"\n]\n\n ```\n\n}\n\n### Workflow\n\n1. Verify artist authentication\n    \n2. Receive selected music IDs\n    \n3. Create album document\n    \n4. Store references to songs\n    \n\nDatabase Structure:\n\nAlbum\n\n{  \ntitle,  \nartist:ObjectId,\n\nmusic:\\[  \nObjectId  \n\\]  \n}\n\n### Success Response\n\n201 Created\n\n{  \n\"message\":\"Album created successfully\"  \n}\n\nConcepts:\n\n- One-to-many relationships\n    \n- MongoDB references"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Album By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/music/album/6a31846fe11fa888a371a082",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "music",
+                "album",
+                "6a31846fe11fa888a371a082"
+              ]
+            },
+            "description": "# Get Single Album API\n\nFetches complete album details.\n\nEndpoint:\n\nGET /api/music/album/:albumId\n\nExample:\n\n/api/music/album/68502abc123\n\n### Workflow\n\n1. Extract albumId from params\n    \n2. Search album collection\n    \n3. Populate:\n    \n    - artist details\n        \n    - music list\n        \n4. Return complete album\n    \n\n### Success Response\n\n{  \n\"album\":{\n\n```\n    \"title\":\"Album\",\n    \"music\":[\n        {\n          \"title\":\"song\",\n          \"uri\":\"url\"\n        }\n    ]\n}\n\n ```\n\n}\n\nConcepts:\n\n- URL parameters\n    \n- Database lookup\n    \n- Nested population"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Album",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/music/albums",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "music",
+                "albums"
+              ]
+            },
+            "description": "# Get Albums API\n\nReturns available albums.\n\nEndpoint:\n\nGET /api/music/albums\n\n### Workflow\n\n1. Fetch albums\n    \n2. Populate artist details\n    \n3. Return simplified album information\n    \n\n### Response\n\n{  \n\"albums\":\\[\n\n```\n    {\n        \"title\":\"Album\",\n        \"artist\":{\n            \"username\":\"artist1\"\n        }\n    }\n]\n\n ```\n\n}\n\nConcepts:\n\n- Query optimization\n    \n- Select fields\n    \n- Populate"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\":\"omkara\",\n    \"email\":\"oma@gmail.com\",\n    \"password\":\"123456\",\n    \"role\":\"user\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "## Register User API\n\nCreates a new user account in the Audion platform.\n\nSupports two account roles:\n\n- user → normal listener\n    \n- artist → allowed to upload music and create albums\n    \n\n### Endpoint\n\nPOST /api/auth/register\n\n### Request Body\n\nContent-Type: application/json\n\nExample:\n\n{  \n\"username\":\"artist1\",  \n\"email\":\"[artist@gmail.com](https://mailto:artist@gmail.com)\",  \n\"password\":\"123456\",  \n\"role\":\"artist\"  \n}\n\n### Workflow\n\n1. Validates incoming user data using Express Validator\n    \n2. Checks if username or email already exists\n    \n3. Hashes password securely using bcrypt\n    \n4. Stores user information in MongoDB\n    \n5. Generates JWT token containing:\n    \n    - user id\n        \n    - role\n        \n6. Stores JWT inside HTTP cookie\n    \n\n### Success Response\n\nStatus: 201 Created\n\n{  \n\"message\":\"Signed-in\",\n\n```\n\"user\":{\n    \"id\":\"mongodb_user_id\",\n    \"username\":\"artist1\",\n    \"email\":\"artist@gmail.com\",\n    \"role\":\"artist\"\n}\n\n ```\n\n}\n\n### Possible Errors\n\n400 Bad Request\n\nValidation failed\n\n409 Conflict\n\nUser already exists\n\n### Technologies Used\n\n- Express.js\n    \n- MongoDB\n    \n- bcrypt\n    \n- JWT\n    \n- Cookies"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout User",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"Avinash\",\n    \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "localhost:3000/api/auth/logout",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logs out the currently authenticated user.\n\nThis endpoint removes the authentication cookie from the client, invalidating the active session on the client side.\n\n## Logout User API\n\nLogs out authenticated user by clearing authentication cookie.\n\n### Endpoint\n\nGET /api/auth/logout\n\n### Workflow\n\n1. Receives logout request\n    \n2. Removes JWT token cookie from browser/client\n    \n3. Ends user session\n    \n\n### Success Response\n\n200 OK\n\n{  \n\"message\":\"User logged out successfully\"  \n}\n\n### Concepts\n\n- Cookie management\n    \n- Session handling"
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"Avinash\",\n    \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Login User API\n\nAuthenticates an existing user and creates a login session.\n\n### Endpoint\n\nPOST /api/auth/login\n\n### Request Body\n\nLogin using email:\n\n{  \n\"email\":\"[artist@gmail.com](https://mailto:artist@gmail.com)\",  \n\"password\":\"123456\"  \n}\n\nOR username:\n\n{  \n\"username\":\"artist1\",  \n\"password\":\"123456\"  \n}\n\n### Workflow\n\n1. Finds user using username/email\n    \n2. Compares entered password with hashed password using bcrypt\n    \n3. Generates JWT authentication token\n    \n4. Stores token inside cookie\n    \n\n### Success Response\n\nStatus: 200 OK\n\n{  \n\"message\":\"User logged in Successfully\",\n\n```\n\"user\":{\n    \"username\":\"artist1\",\n    \"role\":\"artist\"\n}\n\n ```\n\n}\n\n### Errors\n\n401 Unauthorized\n\n{  \n\"message\":\"Invalid Credentials\"  \n}\n\n### Concepts\n\n- Password hashing\n    \n- Authentication\n    \n- JWT token generation"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Music",
+      "item": [
+        {
+          "name": "Get All Songs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/music/get-songs",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "music",
+                "get-songs"
+              ]
+            },
+            "description": "# Get All Music API\n\nFetches uploaded music from Audion database.\n\nAccess:\n\nUser / Artist\n\nEndpoint:\n\nGET /api/music/get-songs\n\n### Workflow\n\n1. Auth middleware verifies user\n    \n2. Fetches music documents from MongoDB\n    \n3. Populates artist information\n    \n4. Returns music list\n    \n\n### Database Relations\n\nMusic Collection\n\n{  \ntitle,  \nuri,  \nartist:ObjectId  \n}\n\nArtist is populated from User collection.\n\n### Response\n\n200 OK\n\n{  \n\"message\":\"Music Fetched Successfully\",\n\n```\n\"musics\":[\n    {\n        \"title\":\"Song\",\n        \"artist\":{\n            \"username\":\"artist1\",\n            \"email\":\"artist@gmail.com\"\n        }\n    }\n]\n\n ```\n\n}\n\n### Concepts\n\n- MongoDB References\n    \n- Mongoose Populate\n    \n- Protected Routes"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Music",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Unrecognzed peace ",
+                  "type": "text",
+                  "uuid": "768e2e90-9835-4fea-ba39-a8824a7504ca"
+                },
+                {
+                  "key": "music",
+                  "type": "file",
+                  "uuid": "1f470abe-6abf-4713-9a39-5077d11c470d",
+                  "src": "/home/thryv/Downloads/miromaxmusic-music-promotion-no-copyright-513944.mp3"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/music/upload",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "music",
+                "upload"
+              ]
+            },
+            "description": "# Upload Music API\n\nAllows artists to upload music files.\n\nAccess:\n\nArtist only\n\nAuthentication:\n\nRequires JWT cookie\n\nEndpoint:\n\nPOST /api/music/upload\n\n### Request Type\n\nmultipart/form-data\n\nFields:\n\ntitle\n\nType: Text\n\nExample:\n\nNight Drive\n\nmusic\n\nType: File\n\nExample:\n\nsong.mp3\n\n### Workflow\n\n1. JWT middleware verifies user\n    \n2. Checks user role is artist\n    \n3. Multer processes uploaded audio file\n    \n4. Audio file is uploaded to ImageKit cloud storage\n    \n5. ImageKit returns hosted URL\n    \n6. Music metadata is stored in MongoDB\n    \n\nMongoDB stores:\n\n- title\n    \n- music URL\n    \n- artist reference\n    \n\nActual MP3 file is NOT stored in database.\n\n### Success Response\n\n201 Created\n\n{  \n\"message\":\"Music Created Successfully\",\n\n```\n\"music\":{\n    \"id\":\"music_id\",\n    \"uri\":\"imagekit_url\",\n    \"artist\":\"artist_id\"\n}\n\n ```\n\n}\n\n### Errors\n\n401 Unauthorized\n\nMissing JWT token\n\n403 Forbidden\n\nUser is not artist\n\n### Concepts\n\n- Role Based Access Control\n    \n- Middleware\n    \n- File Upload\n    \n- Cloud Storage"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
